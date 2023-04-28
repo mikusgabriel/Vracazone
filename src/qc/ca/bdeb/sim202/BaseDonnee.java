@@ -4,57 +4,55 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
+
+
+//TRY CATCH
+//VERIFICATION PANIER
 public class BaseDonnee {
     public static HashMap<String,Client> hashMapClient=new HashMap<>();
-    public static boolean validerClient(Client client, HashMap clients) {
+    public static HashMap<Integer,Produit> hashMapProduit=new HashMap<>();
+
+    public static HashMap<String,Panier> hashMapPanier=new HashMap<>();
+
+    public static HashMap<Integer,ItemPanier> hashMapItemPanier=new HashMap<>();
+    public static boolean validerClient(Client client) {
         if (client.getId().length() < 3) {
             return false;
         }
+        return !hashMapClient.containsKey(client.getId());
+    }
 
-        for (String id : clients.keySet()) {
-            if (c.getId().equals(client.getId())) {
+    public static boolean validerProduit(Produit produit) {
+        List<String> listeUniteSolide= List.of(new String[]{"mg", "g", "kg"});
+        List<String> listeUniteLiquide= List.of(new String[]{"ml", "cl", "L"});
+        if(produit.isSolide()){
+            if (!listeUniteSolide.contains(produit.getUnite())) {
+                return false;
+            }
+
+        }else{
+            if (!listeUniteLiquide.contains(produit.getUnite())){
                 return false;
             }
         }
 
-        return true;
-    }
-
-    public static boolean validerProduit(Produit produit, ArrayList<Produit> produits) {
-        if (!Arrays.asList("mg", "g", "kg", "ml", "cl", "L").contains(produit.getUnite())) {
+        if (produit.getPrixCoutant() >= produit.getPrixUnitaire() * 0.8) {
             return false;
         }
-
-        if (produit.getPrix_coutant() >= produit.getPrix_unitaire() * 0.8) {
-            return false;
-        }
-
-        for (Produit p : produits) {
-            if (p.getCode() == produit.getCode()) {
-                return false;
-            }
-        }
-
-        return true;
+        return !hashMapProduit.containsKey(produit.getCode());
     }
 
-    public static boolean validerPanier(Panier panier, ArrayList<Client> clients, ArrayList<Produit> produits, ArrayList<Panier> paniers) {
+    public static boolean validerPanier(Panier panier) {
         System.out.println(panier.getDate());
         System.out.println(panier.getItems());
-        System.out.println(panier.getId_client());
-        System.out.println(panier.getId_transaction());
+        System.out.println(panier.getIdClient());
+        System.out.println(panier.getIdTransaction());
         // Vérifie les conditions d'invalidité pour les paniers
-        if(panier.getNombre_produits()>0){
+        if(panier.getNombreProduits()>0) {
             return false;
         }
-
-
-
-
-
-
-
         return true; // Retourne true si toutes les validations passent
     }
 
@@ -66,8 +64,10 @@ public class BaseDonnee {
             while (true) {
                 try {
                     Client client= new Client(lecteur.readUTF(),lecteur.readUTF());
-                    validerClient(client, hashMapClient);
-                    hashMapClient.put(client.getId(),client);
+                    if(validerClient(client)){
+                        hashMapClient.put(client.getId(),client);
+                    }
+
                 } catch (EOFException e) {
                     break; //fin du fichier
                 }
@@ -78,28 +78,58 @@ public class BaseDonnee {
     }
 
     public static void loadProduits(String fileName) throws IOException, ClassNotFoundException {
-        ArrayList<Produit> produits = new ArrayList<>();
-        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(fileName))) {
+        try (DataInputStream lecteur = new DataInputStream(new FileInputStream(fileName))) {
             while (true) {
                 try {
-                    Produit produit = (Produit) ois.readObject();
-                    produits.add(produit);
+                    Produit produit=new Produit(
+                            lecteur.readInt(),
+                            lecteur.readUTF(),
+                            lecteur.readBoolean(),
+                            lecteur.readBoolean(),
+                            lecteur.readDouble(),
+                            lecteur.readDouble(),
+                            lecteur.readUTF(),
+                            lecteur.readDouble());
+                    if(validerProduit(produit)){
+                        hashMapProduit.put(produit.getCode(),produit);
+                    }
+
                 } catch (EOFException e) {
                     break; //fin du fichier
                 }
             }
         }
-        produits.removeIf(produit -> !validerProduit(produit, produits));
-        return produits;
-
     }
 
-    public static ArrayList<Panier> loadPaniers(String fileName, ArrayList<Client> clients, ArrayList<Produit> produits) throws IOException, ClassNotFoundException {
-        try (FileInputStream fis = new FileInputStream(fileName);
-             ObjectInputStream ois = new ObjectInputStream(fis)) {
-            ArrayList<Panier> paniers = (ArrayList<Panier>) ois.readObject();
-            paniers.removeIf(panier -> !validerPanier(panier, clients, produits, paniers));
-            return paniers;
+    public static void loadPaniers(String fileName) throws IOException, ClassNotFoundException {
+        try (DataInputStream lecteur = new DataInputStream(new FileInputStream(fileName))) {
+            while (true) {
+                try {
+                    String idTransaction= lecteur.readUTF();
+                    String idClient=lecteur.readUTF();
+                    long date=lecteur.readLong();
+                    int nombreProduits= lecteur.readInt();
+
+
+                    for(int i=0;i<nombreProduits;i++){
+                        int idItemTransaction=lecteur.readInt();
+                        ItemPanier itemPanier=new ItemPanier(idItemTransaction,lecteur.readDouble(),lecteur.readUTF());
+                        hashMapItemPanier.put(idItemTransaction,itemPanier);
+                    }
+
+                    Panier panier=new Panier(idTransaction, idClient, date, nombreProduits, hashMapItemPanier);
+                    hashMapPanier.put(idTransaction,panier);
+                    if(validerPanier(panier)){
+                        hashMapPanier.put(idTransaction,panier);
+                    }
+
+
+
+                } catch (EOFException e) {
+                    break; //fin du fichier
+                }
+            }
+
         }
     }
 }

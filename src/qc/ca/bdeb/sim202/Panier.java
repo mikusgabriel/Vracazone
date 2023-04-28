@@ -1,37 +1,40 @@
 package qc.ca.bdeb.sim202;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Panier {
-    private String id_transaction;
-    private String id_client;
+    private String idTransaction;
+    private String idClient;
     private long date;
-    private int nombre_produits;
-    private ArrayList<ItemPanier> items;
+    private int nombreProduits;
+    private HashMap<Integer,ItemPanier> items;
 
-
-
-
-    public String getId_transaction() {
-        return id_transaction;
+    public Panier(String idTransaction, String id_client, long date, int nombreProduits, HashMap<Integer,ItemPanier> items) {
+        this.idTransaction = idTransaction;
+        this.idClient = id_client;
+        this.date = date;
+        this.nombreProduits = nombreProduits;
+        this.items = items;
     }
 
-    public String getId_client() {
-        return id_client;
+    public String getIdTransaction() {
+        return idTransaction;
+    }
+
+    public String getIdClient() {
+        return idClient;
     }
 
     public long getDate() {
         return date;
     }
 
-    public int getNombre_produits() {
-        return nombre_produits;
+    public int getNombreProduits() {
+        return nombreProduits;
     }
 
-    public ArrayList<ItemPanier> getItems() {
+    public HashMap<Integer, ItemPanier> getItems() {
         return items;
     }
-
-
-
 }
