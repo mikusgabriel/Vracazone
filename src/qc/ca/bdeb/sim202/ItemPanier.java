@@ -10,4 +10,16 @@ public class ItemPanier {
         this.quantite = quantite;
         this.unite = unite;
     }
+
+    public int getCodeProduit() {
+        return codeProduit;
+    }
+
+    public double getQuantite() {
+        return quantite;
+    }
+
+    public String getUnite() {
+        return unite;
+    }
 }

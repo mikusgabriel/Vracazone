@@ -1,16 +1,17 @@
 package qc.ca.bdeb.sim202;
 
+
 import java.util.ArrayList;
-import java.util.HashMap;
+
 
 public class Panier {
     private String idTransaction;
     private String idClient;
     private long date;
     private int nombreProduits;
-    private HashMap<Integer,ItemPanier> items;
+    private ArrayList<ItemPanier> items;
 
-    public Panier(String idTransaction, String id_client, long date, int nombreProduits, HashMap<Integer,ItemPanier> items) {
+    public Panier(String idTransaction, String id_client, long date, int nombreProduits, ArrayList<ItemPanier> items) {
         this.idTransaction = idTransaction;
         this.idClient = id_client;
         this.date = date;
@@ -34,7 +35,8 @@ public class Panier {
         return nombreProduits;
     }
 
-    public HashMap<Integer, ItemPanier> getItems() {
+    public ArrayList<ItemPanier> getItems() {
         return items;
     }
+
 }

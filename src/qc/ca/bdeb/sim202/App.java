@@ -15,16 +15,16 @@ public class App {
             BaseDonnee.loadPaniers("fichiers/paniers2.bin");
             BaseDonnee.loadPaniers("fichiers/paniers3.bin");
             BaseDonnee.loadPaniers("fichiers/paniers4.bin");
-            for (String s:BaseDonnee.hashMapClient.keySet())
+            for (String s:BaseDonnee.getHashMapClient().keySet())
                   {
-                      System.out.println(s+" : "+ BaseDonnee.hashMapClient.get(s).getNom());
+                      System.out.println(s+" : "+ BaseDonnee.getHashMapClient().get(s).getNom());
             }
-            System.out.println(BaseDonnee.hashMapClient.get("CL00000001").getNom());
-            System.out.println(BaseDonnee.hashMapProduit.get(1).toString());
+            System.out.println(BaseDonnee.getHashMapClient().get("CL00000001").getNom());
+            System.out.println(BaseDonnee.getHashMapProduit().get(1).toString());
 
 
             // Traitez les données, effectuez des validations supplémentaires, calculez les factures, etc.
-            System.out.println(BaseDonnee.hashMapPanier.get("VAZ00000009").getIdClient());
+            System.out.println(BaseDonnee.getHashMapPanier().get("VAZ00000009").getIdClient());
 
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
