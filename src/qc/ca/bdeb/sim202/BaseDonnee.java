@@ -61,6 +61,7 @@ public class BaseDonnee {
         boolean isQuantite=true;
         boolean isAlone=true;
         int invalidCode=0;
+        System.out.println(panier.getItems().size());
         for (ItemPanier i:panier.getItems()){
             if(!hashMapProduit.containsKey(i.getCodeProduit())){
                 isAlone=false;
@@ -72,7 +73,7 @@ public class BaseDonnee {
                 break;
 
             }if(hashMapProduit.get(i.getCodeProduit()).getQuantiteMax()<i.getQuantite()||i.getQuantite()<=0  ){
-                System.out.println(i.getQuantite());
+
                 isQuantite=false;
                 invalidCode=i.getCodeProduit();
                 break;
@@ -168,13 +169,14 @@ public class BaseDonnee {
     }
 
     public static void loadPaniers(String fileName) throws IOException, ClassNotFoundException {
-        ArrayList<ItemPanier> itemPaniers=new ArrayList<>();
+
         ArrayList<String> listeErreurs=new ArrayList<>();
         listeErreurs.add("PANIERS REJETES =====================================================================");
         listeErreurs.add("ID_TRANSACTION RAISON_DU_REJET");
 ;        try (DataInputStream lecteur = new DataInputStream(new FileInputStream(fileName))) {
             while (true) {
                 try {
+                    ArrayList<ItemPanier> itemPaniers=new ArrayList<>();
                     String idTransaction= lecteur.readUTF();
                     String idClient=lecteur.readUTF();
                     long date=lecteur.readLong();
@@ -183,8 +185,13 @@ public class BaseDonnee {
 
                     for(int i=0;i<nombreProduits;i++){
                         int idItemTransaction=lecteur.readInt();
-                        ItemPanier itemPanier=new ItemPanier(idItemTransaction,lecteur.readDouble(),lecteur.readUTF());
-                        itemPaniers.add(itemPanier);
+                        double quantite=lecteur.readDouble();
+                        String unite=lecteur.readUTF();
+                        System.out.println(idItemTransaction);
+                        System.out.println(quantite);
+                        System.out.println(unite);
+                        System.out.println("____________________________________________________");
+                        itemPaniers.add(new ItemPanier(idItemTransaction,quantite,unite));
                     }
 
                     Panier panier=new Panier(idTransaction, idClient, date, nombreProduits, itemPaniers);
@@ -208,7 +215,7 @@ public class BaseDonnee {
         } catch (FileNotFoundException e){
             System.err.println("Le fichier n'a pas été trouvé!");
         } catch (IOException e){
-            System.out.println("Erreur");
+            System.err.println("Erreur");
         }
 
         for(String s:listeErreurs){

@@ -1,16 +1,15 @@
 package qc.ca.bdeb.sim202;
 
-public class Produit {
+public class Produit extends UniteChangement {
     private int code;
     private String description;
     private boolean alimentaire;
     private boolean solide;
     private double prixCoutant;
     private double prixUnitaire;
-    private String unite;
-    private double quantiteMax;
 
-    public Produit(int code, String description, boolean alimentaire, boolean solide, double prixCoutant, double prixUnitaire, String unite, double quantiteMax) {
+
+    public Produit(int code, String description, boolean alimentaire, boolean solide, double prixCoutant, double prixUnitaire, String unite, double quantite) {
         this.code = code;
         this.description = description;
         this.alimentaire = alimentaire;
@@ -18,7 +17,11 @@ public class Produit {
         this.prixCoutant = prixCoutant;
         this.prixUnitaire = prixUnitaire;
         this.unite = unite;
-        this.quantiteMax = quantiteMax;
+
+        //quantite max
+        this.quantite = quantite;
+        uniteChangement();
+
     }
 
     @Override
@@ -31,7 +34,7 @@ public class Produit {
                 ", prix_coutant=" + prixCoutant +
                 ", prix_unitaire=" + prixUnitaire +
                 ", unite='" + unite + '\'' +
-                ", quantite_max=" + quantiteMax +
+                ", quantite_max=" + quantite +
                 '}';
     }
 
@@ -64,7 +67,7 @@ public class Produit {
     }
 
     public double getQuantiteMax() {
-        return quantiteMax;
+        return quantite;
     }
 
 

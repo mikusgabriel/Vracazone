@@ -1,14 +1,14 @@
 package qc.ca.bdeb.sim202;
 
-public class ItemPanier {
+public class ItemPanier extends UniteChangement{
     private int codeProduit;
-    private double quantite;
-    private String unite;
+
 
     public ItemPanier(int codeProduit, double quantite, String unite) {
         this.codeProduit = codeProduit;
         this.quantite = quantite;
         this.unite = unite;
+        uniteChangement();
     }
 
     public int getCodeProduit() {
@@ -22,4 +22,6 @@ public class ItemPanier {
     public String getUnite() {
         return unite;
     }
+
+
 }
