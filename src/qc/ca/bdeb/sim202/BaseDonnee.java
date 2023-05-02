@@ -1,20 +1,21 @@
 package qc.ca.bdeb.sim202;
 
+
+
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import java.sql.SQLOutput;
+import java.time.Instant;
+import java.util.*;
 
-
-
-//TRY CATCH
-//VERIFICATION PANIER
 public class BaseDonnee {
     private static final HashMap<String,Client> hashMapClient=new HashMap<>();
     private static final HashMap<Integer,Produit> hashMapProduit=new HashMap<>();
 
     private static final HashMap<String,Panier> hashMapPanier=new HashMap<>();
+    private static final String DATE_ORIGINALE = "2019-10-31 00:00 UTC";
+
+    private static final long DATE_ORIGINALE_LONG=App.getDateLong(DATE_ORIGINALE);
+
 
     public static boolean validerClient(Client client) {
         if (client.getId().length() < 3) {
@@ -24,15 +25,15 @@ public class BaseDonnee {
     }
 
     public static boolean validerProduit(Produit produit) {
-        List<String> listeUniteSolide= List.of(new String[]{"mg", "g", "kg"});
-        List<String> listeUniteLiquide= List.of(new String[]{"ml", "cl", "L"});
+        String uniteSolide= "kg";
+        String uniteLiquide=  "L";
         if(produit.isSolide()){
-            if (!listeUniteSolide.contains(produit.getUnite())) {
+            if (!uniteSolide.equals(produit.getUnite())) {
                 return false;
             }
 
         }else{
-            if (!listeUniteLiquide.contains(produit.getUnite())){
+            if (!uniteLiquide.equals(produit.getUnite())){
                 return false;
             }
         }
@@ -44,27 +45,32 @@ public class BaseDonnee {
     }
 
     public static String validerPanier(Panier panier) {
-        /*System.out.println(panier.getDate());
-        for(ItemPanier i: panier.getItems()){
-            System.out.println(hashMapProduit.get(i.getCodeProduit()));
-
-        }
-
-        System.out.println(panier.getIdClient());
-        System.out.println(panier.getIdTransaction());
-
+        List<String> listeUnite= List.of(new String[]{"kg","L"});
+        /*BOUCLE FOR POUR TESTER SI YA DES ITEM AVEC LE MM CODE QUEUX
+        SI OUI ON ADDITIONNE LEUR QTT ENSEMBLE ET ON POP LE DEUXIEME
+        FAIRE JUSQUA TEMPS QUILS EN RESTE PLUS
          */
-        List<String> listeUnite= List.of(new String[]{"mg", "g", "kg","ml","cl","L"});
+
+
+
+
         // Vérifie les conditions d'invalidité pour les paniers
+        /*System.out.println(panier.getItems().get(0).getQuantite());
+        System.out.println(panier.getItems().get(0).getUnite());
+        System.out.println(hashMapProduit.get(panier.getItems().get(0).getCodeProduit()).getQuantiteMax());
+        System.out.println(hashMapProduit.get(panier.getItems().get(0).getCodeProduit()).getUnite());
+        System.out.println();
+         */
         int quantite=0;
         boolean isUniteValid=true;
         boolean isQuantite=true;
-        boolean isAlone=true;
+        boolean exists=true;
         int invalidCode=0;
         System.out.println(panier.getItems().size());
         for (ItemPanier i:panier.getItems()){
+            quantite+=i.getQuantite();
             if(!hashMapProduit.containsKey(i.getCodeProduit())){
-                isAlone=false;
+                exists=false;
                 invalidCode=i.getCodeProduit();
                 break;
             }
@@ -73,7 +79,6 @@ public class BaseDonnee {
                 break;
 
             }if(hashMapProduit.get(i.getCodeProduit()).getQuantiteMax()<i.getQuantite()||i.getQuantite()<=0  ){
-
                 isQuantite=false;
                 invalidCode=i.getCodeProduit();
                 break;
@@ -84,31 +89,29 @@ public class BaseDonnee {
         }
         else if(hashMapPanier.containsKey(panier.getIdTransaction())) {
             return (panier.getIdTransaction()+" Associe à un panier déja traité");
-
-        }else if(panier.getIdTransaction().length()!=11|| !panier.getIdTransaction().startsWith("VAZ")){
+        }
+        else if(panier.getIdTransaction().length()!=11|| !panier.getIdTransaction().startsWith("VAZ")){
             return panier.getIdTransaction()+" Identifiant de transaction invalide "+panier.getIdTransaction();
-        }else if(!hashMapClient.containsKey(panier.getIdClient())){
-            return panier.getIdTransaction()+" Associé à un client inexsistant "+ panier.getIdClient();
-
-        }else if(panier.getIdClient().length()!=10|| !panier.getIdClient().startsWith("CL")){
+        }
+        else if(!hashMapClient.containsKey(panier.getIdClient())){
+            return panier.getIdTransaction()+" Associé à un client inexistant "+ panier.getIdClient();
+        }
+        else if(panier.getIdClient().length()!=10|| !panier.getIdClient().startsWith("CL")){
             return panier.getIdTransaction()+" Identifiant de client invalide " + panier.getIdClient();
         }
-        /*
-        else if(){
-            DATE
-            "Date et heure invalide"
-            }
-         */
-
-
-        else if(!isAlone){
-            return panier.getIdTransaction()+" Produit invalide"+invalidCode;
+        else if(!exists){
+            return panier.getIdTransaction()+" Produit invalide (produit "+invalidCode+" )";
         }
         else if(!isUniteValid){
             return panier.getIdTransaction()+" Unité de poids du produit invalide";
-        } else if (!isQuantite) {
+        }
+        else if (!isQuantite) {
             return panier.getIdTransaction()+" Quantité non autorisée (produit "+invalidCode+" )";
-        }else{
+        }
+        else if(panier.getDate()<DATE_ORIGINALE_LONG||App.getDateActuel()<panier.getDate()){
+            return "Date invalide "+ App.getDateString(hashMapPanier.get(panier.getIdTransaction()).getDate());
+        }
+        else{
             return null;
 
         }
@@ -128,6 +131,7 @@ public class BaseDonnee {
                     }
 
                 } catch (EOFException e) {
+
                     break; //fin du fichier
                 }
             }
@@ -169,7 +173,6 @@ public class BaseDonnee {
     }
 
     public static void loadPaniers(String fileName) throws IOException, ClassNotFoundException {
-
         ArrayList<String> listeErreurs=new ArrayList<>();
         listeErreurs.add("PANIERS REJETES =====================================================================");
         listeErreurs.add("ID_TRANSACTION RAISON_DU_REJET");
@@ -183,15 +186,13 @@ public class BaseDonnee {
                     int nombreProduits= lecteur.readInt();
 
 
+
                     for(int i=0;i<nombreProduits;i++){
                         int idItemTransaction=lecteur.readInt();
                         double quantite=lecteur.readDouble();
                         String unite=lecteur.readUTF();
-                        System.out.println(idItemTransaction);
-                        System.out.println(quantite);
-                        System.out.println(unite);
-                        System.out.println("____________________________________________________");
                         itemPaniers.add(new ItemPanier(idItemTransaction,quantite,unite));
+
                     }
 
                     Panier panier=new Panier(idTransaction, idClient, date, nombreProduits, itemPaniers);
@@ -234,4 +235,6 @@ public class BaseDonnee {
     public static HashMap<String, Panier> getHashMapPanier() {
         return hashMapPanier;
     }
+
+
 }
