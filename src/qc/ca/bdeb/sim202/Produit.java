@@ -38,6 +38,12 @@ public class Produit {
                 ", quantite_max=" + quantiteMax +
                 '}';
     }
+    public double getTaxes(){
+        return prixUnitaire*0.15;
+    }
+
+
+
 
     public int getCode() {
         return code;

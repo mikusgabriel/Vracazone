@@ -18,6 +18,13 @@ public class Panier {
         this.nombreProduits = nombreProduits;
         this.items = items;
     }
+    public void getFacture(){
+        for(ItemPanier i:items){
+           BaseDonnee.getHashMapProduit().get(i.getCodeProduit());
+
+
+        }
+    }
 
     public String getIdTransaction() {
         return idTransaction;

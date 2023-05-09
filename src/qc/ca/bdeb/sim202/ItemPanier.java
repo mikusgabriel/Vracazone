@@ -6,11 +6,15 @@ public class ItemPanier {
     private String unite;
 
 
+
     public ItemPanier(int codeProduit, double quantite, String unite) {
         this.codeProduit = codeProduit;
         this.quantite = quantite;
         this.unite = unite;
         uniteChangement();
+    }
+    public void setQuantite(double quantite) {
+        this.quantite = quantite;
     }
 
     public int getCodeProduit() {
@@ -24,6 +28,7 @@ public class ItemPanier {
     public String getUnite() {
         return unite;
     }
+
 
     public void uniteChangement(){
 

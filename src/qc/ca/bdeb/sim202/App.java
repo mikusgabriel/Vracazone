@@ -15,13 +15,16 @@ public class App {
         try {
             BaseDonnee.loadClients("fichiers/clients.dat");
             BaseDonnee.loadProduits("fichiers/produits.dat");
-            //BaseDonnee.loadPaniers("fichiers/paniers.bin");
-            /*BaseDonnee.loadPaniers("fichiers/paniers1.bin");
+            BaseDonnee.loadPaniers("fichiers/paniers.bin");
+            /*
+            BaseDonnee.loadPaniers("fichiers/paniers1.bin");
             BaseDonnee.loadPaniers("fichiers/paniers2.bin");
             BaseDonnee.loadPaniers("fichiers/paniers3.bin");
             BaseDonnee.loadPaniers("fichiers/paniers4.bin");
 
+
              */
+
             /*for (String s:BaseDonnee.getHashMapClient().keySet())
                   {
                       System.out.println(s+" : "+ BaseDonnee.getHashMapClient().get(s).getNom());
@@ -32,6 +35,9 @@ public class App {
 
 
              */
+            for(Produit p:BaseDonnee.getHashMapProduit().values()){
+                System.out.println(p);
+            }
 
 
 

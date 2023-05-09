@@ -1,10 +1,9 @@
 package qc.ca.bdeb.sim202;
 
+//A REVISER LES VERIFICATIONS MAIS TERMINER
 
 
 import java.io.*;
-import java.sql.SQLOutput;
-import java.time.Instant;
 import java.util.*;
 
 public class BaseDonnee {
@@ -51,39 +50,44 @@ public class BaseDonnee {
         FAIRE JUSQUA TEMPS QUILS EN RESTE PLUS
          */
 
-
-
-
-        // Vérifie les conditions d'invalidité pour les paniers
-        /*System.out.println(panier.getItems().get(0).getQuantite());
-        System.out.println(panier.getItems().get(0).getUnite());
-        System.out.println(hashMapProduit.get(panier.getItems().get(0).getCodeProduit()).getQuantiteMax());
-        System.out.println(hashMapProduit.get(panier.getItems().get(0).getCodeProduit()).getUnite());
-        System.out.println();
-         */
-        int quantite=0;
+        boolean quantiteValide=true;
+        String invalidCode="";
         boolean isUniteValid=true;
-        boolean isQuantite=true;
         boolean exists=true;
-        int invalidCode=0;
-        System.out.println(panier.getItems().size());
         for (ItemPanier i:panier.getItems()){
-            quantite+=i.getQuantite();
             if(!hashMapProduit.containsKey(i.getCodeProduit())){
                 exists=false;
-                invalidCode=i.getCodeProduit();
+                invalidCode= String.valueOf(i.getCodeProduit());
                 break;
             }
             if(!listeUnite.contains(i.getUnite())){
                 isUniteValid=false;
                 break;
 
-            }if(hashMapProduit.get(i.getCodeProduit()).getQuantiteMax()<i.getQuantite()||i.getQuantite()<=0  ){
-                isQuantite=false;
-                invalidCode=i.getCodeProduit();
-                break;
             }
         }
+        if(exists&&isUniteValid){
+            int temp=-1;
+            for (ItemPanier itemPanier : panier.getItems()) {
+                temp++;
+                double quantite = itemPanier.getQuantite();
+                for (ItemPanier itemPanier1 : panier.getItems()) {
+                    if (itemPanier!=itemPanier1 && itemPanier.getCodeProduit() == itemPanier1.getCodeProduit()) {
+                        quantite += itemPanier1.getQuantite();
+                        panier.getItems().get(temp).setQuantite(quantite);
+                        if (hashMapProduit.get(itemPanier.getCodeProduit()).getQuantiteMax() < quantite || itemPanier1.getQuantite() <= 0) {
+                            quantiteValide = false;
+                            invalidCode += (" " + itemPanier1.getCodeProduit());
+                            break;
+                        }
+                    }
+                }
+
+
+            }
+            System.out.println(panier.getIdTransaction());
+        }
+
         if(panier.getNombreProduits()<=0) {
             return (panier.getIdTransaction()+" Aucun produit commandé: "+panier.getNombreProduits());
         }
@@ -105,7 +109,7 @@ public class BaseDonnee {
         else if(!isUniteValid){
             return panier.getIdTransaction()+" Unité de poids du produit invalide";
         }
-        else if (!isQuantite) {
+        else if (!quantiteValide) {
             return panier.getIdTransaction()+" Quantité non autorisée (produit "+invalidCode+" )";
         }
         else if(panier.getDate()<DATE_ORIGINALE_LONG||App.getDateActuel()<panier.getDate()){
@@ -176,7 +180,7 @@ public class BaseDonnee {
         ArrayList<String> listeErreurs=new ArrayList<>();
         listeErreurs.add("PANIERS REJETES =====================================================================");
         listeErreurs.add("ID_TRANSACTION RAISON_DU_REJET");
-;        try (DataInputStream lecteur = new DataInputStream(new FileInputStream(fileName))) {
+        try (DataInputStream lecteur = new DataInputStream(new FileInputStream(fileName))) {
             while (true) {
                 try {
                     ArrayList<ItemPanier> itemPaniers=new ArrayList<>();
