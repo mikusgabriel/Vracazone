@@ -2,6 +2,9 @@ package qc.ca.bdeb.sim202;
 
 import org.w3c.dom.ls.LSOutput;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -16,27 +19,40 @@ public class App {
             BaseDonnee.loadClients("fichiers/clients.dat");
             BaseDonnee.loadProduits("fichiers/produits.dat");
             BaseDonnee.loadPaniers("fichiers/paniers.bin");
-            /*
-            BaseDonnee.loadPaniers("fichiers/paniers1.bin");
+            /*BaseDonnee.loadPaniers("fichiers/paniers1.bin");
             BaseDonnee.loadPaniers("fichiers/paniers2.bin");
             BaseDonnee.loadPaniers("fichiers/paniers3.bin");
             BaseDonnee.loadPaniers("fichiers/paniers4.bin");
 
-
              */
-
             /*for (String s:BaseDonnee.getHashMapClient().keySet())
                   {
                       System.out.println(s+" : "+ BaseDonnee.getHashMapClient().get(s).getNom());
             }
             System.out.println(BaseDonnee.getHashMapClient().get("CL00000001").getNom());
             System.out.println(BaseDonnee.getHashMapProduit().get(1).toString());
-
-
+             */
+            /*for (Panier p:BaseDonnee.getHashMapPanier().values()){
+                p.addFacturetoFile();
+            }
 
              */
-            for(Produit p:BaseDonnee.getHashMapProduit().values()){
-                System.out.println(p);
+            try{
+                BufferedReader br=new BufferedReader(new FileReader("fichiers/facture.txt"));
+                String line;
+                while ((line = br.readLine()) != null) {
+                    System.out.println(line);
+                }
+
+
+            }catch (FileNotFoundException e){
+                System.err.println("Fichier non trouve");
+            }catch (Exception e){
+                System.out.println("Erreur");
+            }
+            for ( ItemPanier i:BaseDonnee.getHashMapPanier().get("VAZ00000066").getItems()) {
+                System.out.println(BaseDonnee.getHashMapProduit().get(i.getCodeProduit()));
+
             }
 
 

@@ -39,7 +39,12 @@ public class Produit {
                 '}';
     }
     public double getTaxes(){
-        return prixUnitaire*0.15;
+        if(alimentaire){
+            return (prixUnitaire*0.15);
+        }else{
+            return 0;
+        }
+
     }
 
 
@@ -76,6 +81,7 @@ public class Produit {
     public double getQuantiteMax() {
         return quantiteMax;
     }
+
 
 
 }

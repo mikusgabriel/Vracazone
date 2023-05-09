@@ -85,7 +85,7 @@ public class BaseDonnee {
 
 
             }
-            System.out.println(panier.getIdTransaction());
+
         }
 
         if(panier.getNombreProduits()<=0) {

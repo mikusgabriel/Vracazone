@@ -1,6 +1,7 @@
 package qc.ca.bdeb.sim202;
 
 
+import java.io.*;
 import java.util.ArrayList;
 
 
@@ -17,14 +18,49 @@ public class Panier {
         this.date = date;
         this.nombreProduits = nombreProduits;
         this.items = items;
-    }
-    public void getFacture(){
-        for(ItemPanier i:items){
-           BaseDonnee.getHashMapProduit().get(i.getCodeProduit());
 
+
+
+    }
+    private double getPrixfinal(){
+        return getPrixInitial()+getTaxesFinal();
+    }
+    private double getPrixInitial(){
+        double prixInitial=0;
+        for(ItemPanier i:items){
+            prixInitial+=i.getQuantite()*BaseDonnee.getHashMapProduit().get(i.getCodeProduit()).getPrixUnitaire();
+        }
+        return prixInitial;
+    }
+    private double getTaxesFinal(){
+        double taxesFinal=0;
+        for (ItemPanier i:items){
+            taxesFinal+=BaseDonnee.getHashMapProduit().get(i.getCodeProduit()).getTaxes()* i.getQuantite();
+        }
+        return taxesFinal;
+    }
+
+    public void addFacturetoFile(){
+        System.out.println("occc");
+
+        try{
+            PrintWriter file=new PrintWriter(new FileOutputStream("fichiers/facture.txt",true));
+            file.println(idTransaction+" | "+App.getDateString(date)+" |  $"+Math.round(getPrixInitial() * 100.0) / 100.0+" |  $"+Math.round(getTaxesFinal() * 100.0) / 100.0+" |  $"+Math.round(getPrixfinal() * 100.0) / 100.0);
+
+            file.close();
 
         }
+        catch (FileNotFoundException e){
+            System.err.println("File not found");
+        }catch (Exception e){
+            System.out.println("Erreur");
+
+        }
+
     }
+
+
+
 
     public String getIdTransaction() {
         return idTransaction;
