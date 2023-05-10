@@ -1,6 +1,6 @@
 package qc.ca.bdeb.sim202;
 
-import org.w3c.dom.ls.LSOutput;
+
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.TimeZone;
 
@@ -54,8 +53,27 @@ public class App {
                 System.out.println(i.getQuantite());
                 System.out.println(BaseDonnee.getHashMapProduit().get(i.getCodeProduit()));
             }
-            Pot pot=new Pot(0.5,1,TypePot.GRAND);
-            pot.verserSolide(0.4);
+
+            Sachet sachet=new Sachet(BaseDonnee.getHashMapPanier().get("VAZ00000005").getItems().get(1).getCodeProduit());
+            System.out.println(sachet.getType());
+            System.out.println(sachet.getCapaciteMaximale());
+            System.out.println(sachet.getQuantite());
+            System.out.println(sachet.getCodeProduit());
+            double restant=sachet.verserSolide(BaseDonnee.getHashMapPanier().get("VAZ00000005").getItems().get(1).getQuantite());
+            System.out.println(  BaseDonnee.getHashMapPanier().get("VAZ00000005").getItems().get(1).getQuantite());
+            System.out.println(sachet.getType());
+            System.out.println(sachet.getCapaciteMaximale());
+            System.out.println(sachet.getQuantite());
+            System.out.println(sachet.getCodeProduit());
+            System.out.println(restant);
+            restant=sachet.verserSolide(restant);
+            sachet.sceller();
+            restant=sachet.verserSolide(restant);
+            System.out.println(sachet.getType());
+            System.out.println(sachet.getCapaciteMaximale());
+            System.out.println(sachet.getQuantite());
+            System.out.println(sachet.getCodeProduit());
+            System.out.println(restant);
 
 
 

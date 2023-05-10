@@ -6,24 +6,43 @@ public enum TypePot {
     GRAND,
     EXAGERE;
 
-    public String getNomPot(){
+    public String getInfoPot(boolean isString){
         switch (this){
             case MINUSCULE -> {
-                return "minuscule pot";
+                if(isString){
+                    return " minuscule pot de 100 ml ";
+                }else{
+                    return "0.1";
+                }
+
             }
             case PETIT -> {
-                return "petit pot";
+                if(isString){
+                    return " petit pot de 500 ml ";
+                }else{
+                    return "0.5";
+                }
             }
             case GRAND -> {
-                return "grand pot";
+                if (isString){
+                    return " grand pot de 2 L ";
+                }else{
+                    return "2";
+                }
+
             }
             case EXAGERE -> {
-                return "pot exagéré";
+                if(isString){
+                    return " pot exagéré de 20 L ";
+                }else{
+                    return "20";
+                }
+
             }
 
 
         }
-        return null;
+        return "";
     }
 
 
