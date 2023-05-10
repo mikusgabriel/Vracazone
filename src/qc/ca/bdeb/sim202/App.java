@@ -50,10 +50,12 @@ public class App {
             }catch (Exception e){
                 System.out.println("Erreur");
             }
-            for ( ItemPanier i:BaseDonnee.getHashMapPanier().get("VAZ00000066").getItems()) {
+            for ( ItemPanier i:BaseDonnee.getHashMapPanier().get("VAZ00000002").getItems()) {
+                System.out.println(i.getQuantite());
                 System.out.println(BaseDonnee.getHashMapProduit().get(i.getCodeProduit()));
-
             }
+            Pot pot=new Pot(0.5,1,TypePot.GRAND);
+            pot.verserSolide(0.4);
 
 
 
