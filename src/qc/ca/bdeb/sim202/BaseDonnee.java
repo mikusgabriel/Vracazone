@@ -26,6 +26,7 @@ public class BaseDonnee {
     public static boolean validerProduit(Produit produit) {
         String uniteSolide= "kg";
         String uniteLiquide=  "L";
+        System.out.println(produit);
         if(produit.isSolide()){
             if (!uniteSolide.equals(produit.getUnite())) {
                 return false;
@@ -37,9 +38,10 @@ public class BaseDonnee {
             }
         }
 
-        if (produit.getPrixCoutant() >= produit.getPrixUnitaire() * 0.8) {
+        if (produit.getPrixCoutant() >= produit.getPrixUnitaire() /1.2) {
             return false;
         }
+        System.out.println(produit.getDescription());
         return !hashMapProduit.containsKey(produit.getCode());
     }
 

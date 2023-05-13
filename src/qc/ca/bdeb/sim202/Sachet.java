@@ -1,6 +1,7 @@
 package qc.ca.bdeb.sim202;
 
 public class Sachet {
+    private static int valeurNombreSachet=1;
     private final int nombreSachet;
     private double capaciteMaximale;
     private final int codeProduit;
@@ -22,22 +23,22 @@ public class Sachet {
 
     public double verserSolide(double quantite){
         if(!isFerme){
-            if(quantite>Double.parseDouble(TypeSachet.GARGANTUESQUE.getInfoSachet(false))/2){
+            if(quantite>=Double.parseDouble(TypeSachet.GARGANTUESQUE.getInfoSachet(false))/2){
                 type=TypeSachet.GARGANTUESQUE;
                 quantite=calculator(type,quantite);
-            }else if(quantite>Double.parseDouble(TypeSachet.TRES_GRAND.getInfoSachet(false))/2){
+            }else if(quantite>=Double.parseDouble(TypeSachet.TRES_GRAND.getInfoSachet(false))/2){
                 type=TypeSachet.TRES_GRAND;
                 quantite=calculator(type,quantite);
-            }else if(quantite>Double.parseDouble(TypeSachet.GRAND.getInfoSachet(false))/2){
+            }else if(quantite>=Double.parseDouble(TypeSachet.GRAND.getInfoSachet(false))/2){
                 type=TypeSachet.GRAND;
                 quantite=calculator(type,quantite);
-            }else if(quantite>Double.parseDouble(TypeSachet.MOYEN.getInfoSachet(false))/2){
+            }else if(quantite>=Double.parseDouble(TypeSachet.MOYEN.getInfoSachet(false))/2){
                 type=TypeSachet.MOYEN;
                 quantite=calculator(type,quantite);
-            }else if(quantite>Double.parseDouble(TypeSachet.GARGANTUESQUE.getInfoSachet(false))/2){
+            }else if(quantite>=Double.parseDouble(TypeSachet.PETIT.getInfoSachet(false))/2){
                 type=TypeSachet.PETIT;
                 quantite=calculator(type,quantite);
-            }else if(quantite>Double.parseDouble(TypeSachet.MINUSCULE.getInfoSachet(false))/2){
+            }else if(quantite>=Double.parseDouble(TypeSachet.MINUSCULE.getInfoSachet(false))/2){
                 type=TypeSachet.MINUSCULE;
                 quantite=calculator(type,quantite);
 
@@ -49,10 +50,10 @@ public class Sachet {
 
 
             System.out.println("Verser "+this.quantite+" "+BaseDonnee.getHashMapProduit().get(codeProduit).getUnite()+" de "+
-                    BaseDonnee.getHashMapProduit().get(codeProduit).getDescription()+" dans"+type.getInfoSachet(true)+"de capacite "+" (pot "+nombreSachet+")");
+                    BaseDonnee.getHashMapProduit().get(codeProduit).getDescription()+" dans"+type.getInfoSachet(true)+"de capacite "+" (sachet "+nombreSachet+")");
 
         }else{
-            System.out.println("Le Sachet est déja vissé");
+            System.out.println("Le sachet est déja scellé");
         }
         return quantite;
 
@@ -65,7 +66,7 @@ public class Sachet {
             quantite-=capaciteMaximale;
             this.quantite=capaciteMaximale;
         }else{
-            this.quantite=quantite;
+            this.quantite=Math.round(quantite * 100.0) / 100.0;
             quantite=0;
         }
         return quantite;
@@ -92,6 +93,9 @@ public class Sachet {
         return quantite;
     }
 
-    private static int valeurNombreSachet=1;
+
+    public int getNombreSachet() {
+        return nombreSachet;
+    }
 }
 

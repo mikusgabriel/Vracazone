@@ -1,12 +1,12 @@
 package qc.ca.bdeb.sim202;
 
 public class Produit {
-    private int code;
-    private String description;
-    private boolean alimentaire;
-    private boolean solide;
-    private double prixCoutant;
-    private double prixUnitaire;
+    private final int code;
+    private final String description;
+    private final boolean alimentaire;
+    private final boolean solide;
+    private final double prixCoutant;
+    private final double prixUnitaire;
     private double quantiteMax;
     private String unite;
 
@@ -20,6 +20,7 @@ public class Produit {
         this.prixUnitaire = prixUnitaire;
         this.unite = unite;
         this.quantiteMax = quantiteMax;
+        uniteChangement();
 
 
 
@@ -39,10 +40,32 @@ public class Produit {
                 '}';
     }
     public double getTaxes(){
-        if(alimentaire){
+        if(!alimentaire){
             return (prixUnitaire*0.15);
         }else{
             return 0;
+        }
+
+    }
+    public void uniteChangement(){
+
+        switch (unite) {
+            case "ml" -> {
+                quantiteMax /= 1000;
+                unite = "L";
+            }
+            case "cl" -> {
+                quantiteMax /= 10;
+                unite = "L";
+            }
+            case "g" -> {
+                quantiteMax /= 1000;
+                unite = "kg";
+            }
+            case "mg" -> {
+                quantiteMax /= 1000000;
+                unite = "kg";
+            }
         }
 
     }

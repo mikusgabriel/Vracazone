@@ -2,41 +2,28 @@ package qc.ca.bdeb.sim202;
 
 
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
-import java.util.Date;
-import java.util.TimeZone;
+import java.util.*;
 
 public class App {
     public static void main(String[] args) {
         try {
             BaseDonnee.loadClients("fichiers/clients.dat");
             BaseDonnee.loadProduits("fichiers/produits.dat");
-            BaseDonnee.loadPaniers("fichiers/paniers.bin");
-            /*BaseDonnee.loadPaniers("fichiers/paniers1.bin");
+            //BaseDonnee.loadPaniers("fichiers/paniers.bin");
+            //BaseDonnee.loadPaniers("fichiers/paniers1.bin");
             BaseDonnee.loadPaniers("fichiers/paniers2.bin");
-            BaseDonnee.loadPaniers("fichiers/paniers3.bin");
-            BaseDonnee.loadPaniers("fichiers/paniers4.bin");
+            //BaseDonnee.loadPaniers("fichiers/paniers3.bin");
+            //BaseDonnee.loadPaniers("fichiers/paniers4.bin");
 
-             */
-            /*for (String s:BaseDonnee.getHashMapClient().keySet())
-                  {
-                      System.out.println(s+" : "+ BaseDonnee.getHashMapClient().get(s).getNom());
-            }
-            System.out.println(BaseDonnee.getHashMapClient().get("CL00000001").getNom());
-            System.out.println(BaseDonnee.getHashMapProduit().get(1).toString());
-             */
-            /*for (Panier p:BaseDonnee.getHashMapPanier().values()){
-                p.addFacturetoFile();
-            }
-
-             */
             try{
+                BufferedWriter file=new BufferedWriter(new FileWriter("fichiers/facture.txt"));
+                for(Panier p:BaseDonnee.getHashMapPanier().values()){
+                    p.addFacturetoFile();
+                }
                 BufferedReader br=new BufferedReader(new FileReader("fichiers/facture.txt"));
                 String line;
                 while ((line = br.readLine()) != null) {
@@ -49,31 +36,54 @@ public class App {
             }catch (Exception e){
                 System.out.println("Erreur");
             }
-            for ( ItemPanier i:BaseDonnee.getHashMapPanier().get("VAZ00000002").getItems()) {
-                System.out.println(i.getQuantite());
-                System.out.println(BaseDonnee.getHashMapProduit().get(i.getCodeProduit()));
+
+
+            //deliveryPackages.sort(Comparator.comparing(DeliveryPackage::getDateOfTransaction));
+            ArrayList<Colis> colisArrayList=new ArrayList<>();
+            for(Panier p:BaseDonnee.getHashMapPanier().values()){
+                ArrayList<Pot> potArrayList=new ArrayList<>();
+                Stack<Sachet> sachetPile=new Stack<>();
+                for(ItemPanier i:p.getItems()){
+                    double nombreRestant=i.getQuantite();
+                    while(nombreRestant>0)
+                        if(!BaseDonnee.getHashMapProduit().get(i.getCodeProduit()).isSolide()){
+                            Pot pot=new Pot(i.getCodeProduit());
+                            nombreRestant=pot.verserLiquide(nombreRestant);
+                            pot.visser();
+                            potArrayList.add(pot);
+                        }else{
+                            Sachet sachet=new Sachet(i.getCodeProduit());
+                            nombreRestant=sachet.verserSolide(nombreRestant);
+                            sachet.sceller();
+                            sachetPile.add(sachet);
+                        }
+                }
+                potArrayList.sort(Comparator.comparing(Pot::getCapaciteMaximale).reversed());
+                sachetPile.sort(Comparator.comparing(Sachet::getQuantite).reversed());
+                colisArrayList.add(new Colis(p.getIdTransaction(),sachetPile,potArrayList, p.getDate()));
+            }
+            colisArrayList.sort(Comparator.comparing(Colis::getDateTransaction));
+//fonctionne pas//
+            for (Colis c:colisArrayList){
+                System.out.println(c.getIdTransaction());
+                for (Pot p:c.getListePot()){
+                    System.out.println("pot");
+                    System.out.println(p.getNombrePot());
+                    System.out.println(p.getQuantite());
+
+                }for (Sachet s:c.getPileSachet()){
+                    System.out.println("sachet");
+                    System.out.println(s.getNombreSachet());
+                    System.out.println(s.getQuantite());
+
+                }
             }
 
-            Sachet sachet=new Sachet(BaseDonnee.getHashMapPanier().get("VAZ00000005").getItems().get(1).getCodeProduit());
-            System.out.println(sachet.getType());
-            System.out.println(sachet.getCapaciteMaximale());
-            System.out.println(sachet.getQuantite());
-            System.out.println(sachet.getCodeProduit());
-            double restant=sachet.verserSolide(BaseDonnee.getHashMapPanier().get("VAZ00000005").getItems().get(1).getQuantite());
-            System.out.println(  BaseDonnee.getHashMapPanier().get("VAZ00000005").getItems().get(1).getQuantite());
-            System.out.println(sachet.getType());
-            System.out.println(sachet.getCapaciteMaximale());
-            System.out.println(sachet.getQuantite());
-            System.out.println(sachet.getCodeProduit());
-            System.out.println(restant);
-            restant=sachet.verserSolide(restant);
-            sachet.sceller();
-            restant=sachet.verserSolide(restant);
-            System.out.println(sachet.getType());
-            System.out.println(sachet.getCapaciteMaximale());
-            System.out.println(sachet.getQuantite());
-            System.out.println(sachet.getCodeProduit());
-            System.out.println(restant);
+
+
+
+
+
 
 
 

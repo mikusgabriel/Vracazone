@@ -17,15 +17,15 @@ public class Pot {
         this.codeProduit=codeProduit;
     }
 
-    public double verserSolide(double quantite){
+    public double verserLiquide(double quantite){
         if(!isFerme){
-            if(quantite>Double.parseDouble(TypePot.EXAGERE.getInfoPot(false))/2){
+            if(quantite>=Double.parseDouble(TypePot.EXAGERE.getInfoPot(false))/2){
                 type=TypePot.EXAGERE;
                 quantite=calculator(type,quantite);
-            }else if(quantite>Double.parseDouble(TypePot.GRAND.getInfoPot(false))/2){
+            }else if(quantite>=Double.parseDouble(TypePot.GRAND.getInfoPot(false))/2){
                 type=TypePot.GRAND;
                 quantite=calculator(type,quantite);
-            }else if(quantite>Double.parseDouble(TypePot.PETIT.getInfoPot(false))/2){
+            }else if(quantite>=Double.parseDouble(TypePot.PETIT.getInfoPot(false))/2){
                 type=TypePot.PETIT;
                 quantite=calculator(type,quantite);
             }else{
@@ -52,7 +52,7 @@ public class Pot {
             quantite-=capaciteMaximale;
             this.quantite=capaciteMaximale;
         }else{
-            this.quantite=quantite;
+            this.quantite=Math.round(quantite * 100.0) / 100.0;
             quantite=0;
         }
         return quantite;
@@ -79,5 +79,13 @@ public class Pot {
         return quantite;
     }
 
+    public int getNombrePot() {
+        return nombrePot;
+    }
+
     private static int valeurNombrePot=1;
+
+    public static int getValeurNombrePot() {
+        return valeurNombrePot;
+    }
 }

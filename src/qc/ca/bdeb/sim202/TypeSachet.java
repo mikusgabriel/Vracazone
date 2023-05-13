@@ -39,7 +39,7 @@ public enum TypeSachet {
             }
             case MOYEN -> {
                 if(isString){
-                    return "sachet moyen de 2 kg ";
+                    return " sachet moyen de 2 kg ";
                 }else{
                     return "2";
                 }
@@ -55,7 +55,7 @@ public enum TypeSachet {
             }
             case TRES_GRAND -> {
                 if(isString){
-                    return "tres grand sachet de 100 kg";
+                    return " tres grand sachet de 100 kg ";
                 }else{
                     return "100";
                 }
@@ -63,7 +63,7 @@ public enum TypeSachet {
             }
             case GARGANTUESQUE -> {
                 if(isString){
-                    return "sachet gargantuesque de 500 kg";
+                    return " sachet gargantuesque de 500 kg ";
                 }else{
                     return "500";
                 }

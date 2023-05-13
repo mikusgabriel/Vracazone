@@ -6,11 +6,11 @@ import java.util.ArrayList;
 
 
 public class Panier {
-    private String idTransaction;
-    private String idClient;
-    private long date;
-    private int nombreProduits;
-    private ArrayList<ItemPanier> items;
+    private final String idTransaction;
+    private final String idClient;
+    private final long date;
+    private final int nombreProduits;
+    private final ArrayList<ItemPanier> items;
 
     public Panier(String idTransaction, String id_client, long date, int nombreProduits, ArrayList<ItemPanier> items) {
         this.idTransaction = idTransaction;
