@@ -10,7 +10,7 @@ public class BaseDonnee {
     private static final HashMap<String,Client> hashMapClient=new HashMap<>();
     private static final HashMap<Integer,Produit> hashMapProduit=new HashMap<>();
 
-    private static final HashMap<String,Panier> hashMapPanier=new HashMap<>();
+    private static final LinkedHashMap<String,Panier> hashMapPanier=new LinkedHashMap<>();
     private static final String DATE_ORIGINALE = "2019-10-31 00:00 UTC";
 
     private static final long DATE_ORIGINALE_LONG=App.getDateLong(DATE_ORIGINALE);

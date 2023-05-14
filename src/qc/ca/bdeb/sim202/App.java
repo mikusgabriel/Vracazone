@@ -15,8 +15,8 @@ public class App {
             BaseDonnee.loadProduits("fichiers/produits.dat");
             //BaseDonnee.loadPaniers("fichiers/paniers.bin");
             //BaseDonnee.loadPaniers("fichiers/paniers1.bin");
-            BaseDonnee.loadPaniers("fichiers/paniers2.bin");
-            //BaseDonnee.loadPaniers("fichiers/paniers3.bin");
+            //BaseDonnee.loadPaniers("fichiers/paniers2.bin");
+            BaseDonnee.loadPaniers("fichiers/paniers3.bin");
             //BaseDonnee.loadPaniers("fichiers/paniers4.bin");
 
             try{
@@ -55,28 +55,42 @@ public class App {
                             Sachet sachet=new Sachet(i.getCodeProduit());
                             nombreRestant=sachet.verserSolide(nombreRestant);
                             sachet.sceller();
+                            System.out.println(sachet.getQuantite());
                             sachetPile.add(sachet);
                         }
                 }
                 potArrayList.sort(Comparator.comparing(Pot::getCapaciteMaximale).reversed());
-                sachetPile.sort(Comparator.comparing(Sachet::getQuantite).reversed());
-                colisArrayList.add(new Colis(p.getIdTransaction(),sachetPile,potArrayList, p.getDate()));
+                sachetPile.sort(Comparator.comparing(Sachet::getQuantite));
+                for(Sachet s:sachetPile){
+                    System.out.println(s.getQuantite());
+                }
+                colisArrayList.add(new Colis(p.getIdTransaction(),p.getIdClient(),sachetPile,potArrayList, p.getDate()));
             }
             colisArrayList.sort(Comparator.comparing(Colis::getDateTransaction));
 //fonctionne pas//
             for (Colis c:colisArrayList){
+                ArrayList<Integer> potArrayListNombre=new ArrayList<>();
+                ArrayList<Integer> sachetArrayListNombre=new ArrayList<>();
                 System.out.println(c.getIdTransaction());
-                for (Pot p:c.getListePot()){
-                    System.out.println("pot");
-                    System.out.println(p.getNombrePot());
-                    System.out.println(p.getQuantite());
+                for (Sachet s:c.getPileSachet()){
+                    sachetArrayListNombre.add(s.getNombreSachet());
 
-                }for (Sachet s:c.getPileSachet()){
-                    System.out.println("sachet");
-                    System.out.println(s.getNombreSachet());
-                    System.out.println(s.getQuantite());
 
                 }
+                for (Pot p:c.getListePot()){
+                    potArrayListNombre.add(p.getNombrePot());
+                }
+                System.out.println();
+                System.out.println("Sachets:");
+                
+                System.out.println(sachetArrayListNombre);
+                System.out.println();
+                System.out.println("Pots:");
+                System.out.println(potArrayListNombre);
+
+
+
+
             }
 
 

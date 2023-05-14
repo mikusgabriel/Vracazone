@@ -6,14 +6,18 @@ import java.util.Stack;
 public class Colis {
 
     private final String idTransaction;
+
     private final Stack<Sachet> pileSachet;
     private final ArrayList<Pot> listePot;
     private final long dateTransaction;
 
-    Colis(String idTransaction, Stack<Sachet> pileSachet, ArrayList<Pot> listePot, long dateTransaction){
+    private final String idClient;
+
+    Colis(String idTransaction,String idClient, Stack<Sachet> pileSachet, ArrayList<Pot> listePot, long dateTransaction){
         this.idTransaction=idTransaction;
         this.listePot=listePot;
         this.pileSachet=pileSachet;
+        this.idClient=idClient;
         this.dateTransaction = dateTransaction;
     }
 
