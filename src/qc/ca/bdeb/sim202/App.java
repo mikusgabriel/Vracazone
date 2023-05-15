@@ -3,6 +3,7 @@ package qc.ca.bdeb.sim202;
 
 
 import java.io.*;
+import java.sql.SQLOutput;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
@@ -13,10 +14,10 @@ public class App {
         try {
             BaseDonnee.loadClients("fichiers/clients.dat");
             BaseDonnee.loadProduits("fichiers/produits.dat");
-            //BaseDonnee.loadPaniers("fichiers/paniers.bin");
+            BaseDonnee.loadPaniers("fichiers/paniers.bin");
             //BaseDonnee.loadPaniers("fichiers/paniers1.bin");
             //BaseDonnee.loadPaniers("fichiers/paniers2.bin");
-            BaseDonnee.loadPaniers("fichiers/paniers3.bin");
+            //BaseDonnee.loadPaniers("fichiers/paniers3.bin");
             //BaseDonnee.loadPaniers("fichiers/paniers4.bin");
 
             try{
@@ -24,11 +25,7 @@ public class App {
                 for(Panier p:BaseDonnee.getHashMapPanier().values()){
                     p.addFacturetoFile();
                 }
-                BufferedReader br=new BufferedReader(new FileReader("fichiers/facture.txt"));
-                String line;
-                while ((line = br.readLine()) != null) {
-                    System.out.println(line);
-                }
+
 
 
             }catch (FileNotFoundException e){
@@ -38,60 +35,22 @@ public class App {
             }
 
 
-            //deliveryPackages.sort(Comparator.comparing(DeliveryPackage::getDateOfTransaction));
             ArrayList<Colis> colisArrayList=new ArrayList<>();
-            for(Panier p:BaseDonnee.getHashMapPanier().values()){
-                ArrayList<Pot> potArrayList=new ArrayList<>();
-                Stack<Sachet> sachetPile=new Stack<>();
-                for(ItemPanier i:p.getItems()){
-                    double nombreRestant=i.getQuantite();
-                    while(nombreRestant>0)
-                        if(!BaseDonnee.getHashMapProduit().get(i.getCodeProduit()).isSolide()){
-                            Pot pot=new Pot(i.getCodeProduit());
-                            nombreRestant=pot.verserLiquide(nombreRestant);
-                            pot.visser();
-                            potArrayList.add(pot);
-                        }else{
-                            Sachet sachet=new Sachet(i.getCodeProduit());
-                            nombreRestant=sachet.verserSolide(nombreRestant);
-                            sachet.sceller();
-                            System.out.println(sachet.getQuantite());
-                            sachetPile.add(sachet);
-                        }
-                }
-                potArrayList.sort(Comparator.comparing(Pot::getCapaciteMaximale).reversed());
-                sachetPile.sort(Comparator.comparing(Sachet::getQuantite));
-                for(Sachet s:sachetPile){
-                    System.out.println(s.getQuantite());
-                }
-                colisArrayList.add(new Colis(p.getIdTransaction(),p.getIdClient(),sachetPile,potArrayList, p.getDate()));
+            PrintWriter printWriter=new PrintWriter("fichiers/registre.txt");
+            PrintWriter printWriter2=new PrintWriter("fichiers/livraisons.txt");
+            ArrayList<Panier> arrayListPanierOrdreTemps=new ArrayList<>(BaseDonnee.getHashMapPanier().values());
+            arrayListPanierOrdreTemps.sort(Comparator.comparing(Panier::getDate));
+            for(Panier p:arrayListPanierOrdreTemps){
+                Colis colis=new Colis(p.getIdTransaction(),p.getIdClient(), p.getDate());
+                colis.emballer();
+                colisArrayList.add(colis);
+                colis.addToLivraison();
+                colis.addToRegistre();
             }
-            colisArrayList.sort(Comparator.comparing(Colis::getDateTransaction));
-//fonctionne pas//
-            for (Colis c:colisArrayList){
-                ArrayList<Integer> potArrayListNombre=new ArrayList<>();
-                ArrayList<Integer> sachetArrayListNombre=new ArrayList<>();
-                System.out.println(c.getIdTransaction());
-                for (Sachet s:c.getPileSachet()){
-                    sachetArrayListNombre.add(s.getNombreSachet());
-
-
-                }
-                for (Pot p:c.getListePot()){
-                    potArrayListNombre.add(p.getNombrePot());
-                }
-                System.out.println();
-                System.out.println("Sachets:");
-                
-                System.out.println(sachetArrayListNombre);
-                System.out.println();
-                System.out.println("Pots:");
-                System.out.println(potArrayListNombre);
-
-
-
-
-            }
+            Queue<Colis> listeColis=new LinkedList<>(colisArrayList);
+            Entrepot entrepot=new Entrepot(listeColis);
+            entrepot.calculerBilan();
+            entrepot.afficherBilan();
 
 
 

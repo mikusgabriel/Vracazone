@@ -55,7 +55,7 @@ public class Produit {
                 unite = "L";
             }
             case "cl" -> {
-                quantiteMax /= 10;
+                quantiteMax /= 100;
                 unite = "L";
             }
             case "g" -> {

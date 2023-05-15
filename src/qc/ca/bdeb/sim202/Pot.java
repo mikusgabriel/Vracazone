@@ -19,13 +19,13 @@ public class Pot {
 
     public double verserLiquide(double quantite){
         if(!isFerme){
-            if(quantite>=Double.parseDouble(TypePot.EXAGERE.getInfoPot(false))/2){
+            if(quantite>=Double.parseDouble(TypePot.EXAGERE.getInfoPot(1))/2){
                 type=TypePot.EXAGERE;
                 quantite=calculator(type,quantite);
-            }else if(quantite>=Double.parseDouble(TypePot.GRAND.getInfoPot(false))/2){
+            }else if(quantite>=Double.parseDouble(TypePot.GRAND.getInfoPot(1))/2){
                 type=TypePot.GRAND;
                 quantite=calculator(type,quantite);
-            }else if(quantite>=Double.parseDouble(TypePot.PETIT.getInfoPot(false))/2){
+            }else if(quantite>=Double.parseDouble(TypePot.PETIT.getInfoPot(1))/2){
                 type=TypePot.PETIT;
                 quantite=calculator(type,quantite);
             }else{
@@ -36,7 +36,7 @@ public class Pot {
 
 
             System.out.println("Verser "+this.quantite+" "+BaseDonnee.getHashMapProduit().get(codeProduit).getUnite()+" de "+
-                    BaseDonnee.getHashMapProduit().get(codeProduit).getDescription()+" dans"+type.getInfoPot(true)+"de capacite "+" (pot "+nombrePot+")");
+                    BaseDonnee.getHashMapProduit().get(codeProduit).getDescription()+" dans"+type.getInfoPot(0)+"de capacite "+" (pot "+nombrePot+")");
 
         }else{
             System.out.println("Le pot est déja vissé");
@@ -47,7 +47,7 @@ public class Pot {
     }
 
     private double calculator(TypePot type, double quantite){
-        capaciteMaximale= Double.parseDouble(type.getInfoPot(false));
+        capaciteMaximale= Double.parseDouble(type.getInfoPot(1));
         if(quantite>capaciteMaximale){
             quantite-=capaciteMaximale;
             this.quantite=capaciteMaximale;

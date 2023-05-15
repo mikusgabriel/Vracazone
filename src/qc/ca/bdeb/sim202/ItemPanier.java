@@ -38,7 +38,7 @@ public class ItemPanier {
                 unite = "L";
             }
             case "cl" -> {
-                quantite /= 10;
+                quantite /= 100;
                 unite = "L";
             }
             case "g" -> {

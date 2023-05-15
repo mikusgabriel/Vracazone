@@ -3,6 +3,7 @@ package qc.ca.bdeb.sim202;
 //A REVISER LES VERIFICATIONS MAIS TERMINER
 
 
+import javax.swing.plaf.IconUIResource;
 import java.io.*;
 import java.util.*;
 
@@ -26,7 +27,6 @@ public class BaseDonnee {
     public static boolean validerProduit(Produit produit) {
         String uniteSolide= "kg";
         String uniteLiquide=  "L";
-        System.out.println(produit);
         if(produit.isSolide()){
             if (!uniteSolide.equals(produit.getUnite())) {
                 return false;
@@ -41,7 +41,6 @@ public class BaseDonnee {
         if (produit.getPrixCoutant() >= produit.getPrixUnitaire() /1.2) {
             return false;
         }
-        System.out.println(produit.getDescription());
         return !hashMapProduit.containsKey(produit.getCode());
     }
 
@@ -56,8 +55,10 @@ public class BaseDonnee {
         String invalidCode="";
         boolean isUniteValid=true;
         boolean exists=true;
+        double invalidQuantite=0;
         for (ItemPanier i:panier.getItems()){
             if(!hashMapProduit.containsKey(i.getCodeProduit())){
+
                 exists=false;
                 invalidCode= String.valueOf(i.getCodeProduit());
                 break;
@@ -68,27 +69,34 @@ public class BaseDonnee {
 
             }
         }
+
         if(exists&&isUniteValid){
             int temp=-1;
             for (ItemPanier itemPanier : panier.getItems()) {
+
                 temp++;
                 double quantite = itemPanier.getQuantite();
                 for (ItemPanier itemPanier1 : panier.getItems()) {
                     if (itemPanier!=itemPanier1 && itemPanier.getCodeProduit() == itemPanier1.getCodeProduit()) {
                         quantite += itemPanier1.getQuantite();
                         panier.getItems().get(temp).setQuantite(quantite);
-                        if (hashMapProduit.get(itemPanier.getCodeProduit()).getQuantiteMax() < quantite || itemPanier1.getQuantite() <= 0) {
-                            quantiteValide = false;
-                            invalidCode += (" " + itemPanier1.getCodeProduit());
-                            break;
-                        }
+                        itemPanier1.setQuantite(0.000001);
+
                     }
+                    if (hashMapProduit.get(itemPanier.getCodeProduit()).getQuantiteMax() < quantite || itemPanier1.getQuantite() <= 0) {
+                        quantiteValide = false;
+                        invalidCode += ("" + itemPanier1.getCodeProduit());
+                        invalidQuantite=itemPanier1.getQuantite();
+                        break;
+                    }
+
                 }
 
 
             }
 
         }
+
 
         if(panier.getNombreProduits()<=0) {
             return (panier.getIdTransaction()+" Aucun produit commandé: "+panier.getNombreProduits());
@@ -112,7 +120,7 @@ public class BaseDonnee {
             return panier.getIdTransaction()+" Unité de poids du produit invalide";
         }
         else if (!quantiteValide) {
-            return panier.getIdTransaction()+" Quantité non autorisée (produit "+invalidCode+" )";
+            return panier.getIdTransaction()+" Quantité non autorisée (produit "+invalidCode+" quantite= "+invalidQuantite+" )";
         }
         else if(panier.getDate()<DATE_ORIGINALE_LONG||App.getDateActuel()<panier.getDate()){
             return "Date invalide "+ App.getDateString(hashMapPanier.get(panier.getIdTransaction()).getDate());
@@ -203,6 +211,7 @@ public class BaseDonnee {
 
                     Panier panier=new Panier(idTransaction, idClient, date, nombreProduits, itemPaniers);
 
+
                     String constatPanier=validerPanier(panier);
                     if(constatPanier==null){
                         hashMapPanier.put(idTransaction,panier);
@@ -224,6 +233,8 @@ public class BaseDonnee {
         } catch (IOException e){
             System.err.println("Erreur");
         }
+
+
 
         for(String s:listeErreurs){
             System.out.println(s);

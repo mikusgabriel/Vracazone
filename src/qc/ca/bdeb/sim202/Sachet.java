@@ -23,22 +23,22 @@ public class Sachet {
 
     public double verserSolide(double quantite){
         if(!isFerme){
-            if(quantite>=Double.parseDouble(TypeSachet.GARGANTUESQUE.getInfoSachet(false))/2){
+            if(quantite>=Double.parseDouble(TypeSachet.GARGANTUESQUE.getInfoSachet(1))/2){
                 type=TypeSachet.GARGANTUESQUE;
                 quantite=calculator(type,quantite);
-            }else if(quantite>=Double.parseDouble(TypeSachet.TRES_GRAND.getInfoSachet(false))/2){
+            }else if(quantite>=Double.parseDouble(TypeSachet.TRES_GRAND.getInfoSachet(1))/2){
                 type=TypeSachet.TRES_GRAND;
                 quantite=calculator(type,quantite);
-            }else if(quantite>=Double.parseDouble(TypeSachet.GRAND.getInfoSachet(false))/2){
+            }else if(quantite>=Double.parseDouble(TypeSachet.GRAND.getInfoSachet(1))/2){
                 type=TypeSachet.GRAND;
                 quantite=calculator(type,quantite);
-            }else if(quantite>=Double.parseDouble(TypeSachet.MOYEN.getInfoSachet(false))/2){
+            }else if(quantite>=Double.parseDouble(TypeSachet.MOYEN.getInfoSachet(1))/2){
                 type=TypeSachet.MOYEN;
                 quantite=calculator(type,quantite);
-            }else if(quantite>=Double.parseDouble(TypeSachet.PETIT.getInfoSachet(false))/2){
+            }else if(quantite>=Double.parseDouble(TypeSachet.PETIT.getInfoSachet(1))/2){
                 type=TypeSachet.PETIT;
                 quantite=calculator(type,quantite);
-            }else if(quantite>=Double.parseDouble(TypeSachet.MINUSCULE.getInfoSachet(false))/2){
+            }else if(quantite>=Double.parseDouble(TypeSachet.MINUSCULE.getInfoSachet(1))/2){
                 type=TypeSachet.MINUSCULE;
                 quantite=calculator(type,quantite);
 
@@ -50,7 +50,7 @@ public class Sachet {
 
 
             System.out.println("Verser "+this.quantite+" "+BaseDonnee.getHashMapProduit().get(codeProduit).getUnite()+" de "+
-                    BaseDonnee.getHashMapProduit().get(codeProduit).getDescription()+" dans"+type.getInfoSachet(true)+"de capacite "+" (sachet "+nombreSachet+")");
+                    BaseDonnee.getHashMapProduit().get(codeProduit).getDescription()+" dans"+type.getInfoSachet(0)+"de capacite "+" (sachet "+nombreSachet+")");
 
         }else{
             System.out.println("Le sachet est déja scellé");
@@ -61,7 +61,7 @@ public class Sachet {
     }
 
     private double calculator(TypeSachet type, double quantite){
-        capaciteMaximale= Double.parseDouble(type.getInfoSachet(false));
+        capaciteMaximale= Double.parseDouble(type.getInfoSachet(1));
         if(quantite>capaciteMaximale){
             quantite-=capaciteMaximale;
             this.quantite=capaciteMaximale;

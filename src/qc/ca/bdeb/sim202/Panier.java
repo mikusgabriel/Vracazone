@@ -3,6 +3,7 @@ package qc.ca.bdeb.sim202;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 
 public class Panier {
@@ -41,7 +42,6 @@ public class Panier {
     }
 
     public void addFacturetoFile(){
-        System.out.println("occc");
 
         try{
             PrintWriter file=new PrintWriter(new FileOutputStream("fichiers/facture.txt",true));
@@ -82,4 +82,15 @@ public class Panier {
         return items;
     }
 
+
+    @Override
+    public String toString() {
+        return "Panier{" +
+                "idTransaction='" + idTransaction + '\'' +
+                ", idClient='" + idClient + '\'' +
+                ", date=" + date +
+                ", nombreProduits=" + nombreProduits +
+                ", items=" + items +
+                '}';
+    }
 }
